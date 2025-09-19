@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {TextField} from "@mui/material";
 
 type Props = {
     value: string
@@ -12,7 +13,9 @@ export const EditableSpan = ({value, changeItemTitle,classes}: Props) => {
     return (
         <>
             {isEditMode
-                ? <input
+                ? <TextField
+                     variant={"standard"}
+
                     value={title}
                     autoFocus
                     onBlur={() => {
@@ -28,4 +31,4 @@ export const EditableSpan = ({value, changeItemTitle,classes}: Props) => {
     );
 };
 //autoFocus- при переходе в инпут курсор автоматически появляется в input
-//onBlur - обработчик срабатывает при потере фокуса
+//onBlur - обработчик срабатывает при потере фокуpса

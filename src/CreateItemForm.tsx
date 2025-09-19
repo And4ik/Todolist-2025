@@ -1,27 +1,29 @@
 import {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {Button} from "./Button.tsx";
+import {Box, IconButton, TextField} from "@mui/material";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {boxSx} from "./Todolist.styles.ts";
 
 type Props = {
     createItemTitle: (newTitle: string) => void
     maxTitleLength: number
 }
 
-export const CreateItemForm = ({createItemTitle,maxTitleLength}: Props) => {
+export const CreateItemForm = ({createItemTitle, maxTitleLength}: Props) => {
     const [itemTitle, setItemTitle] = useState("")
-    const [error, setError] = useState<string | null>(null)
+    const [error, setError] = useState(false)
 
     const createItemHandler = () => {
         const trimmedTitle = itemTitle.trim()
         if (trimmedTitle) {
             createItemTitle(trimmedTitle)
-            setItemTitle("")
         } else {
-            setError("Title is required")
+            setError(true)
         }
+        setItemTitle("")
     }
     const changeTaskTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        error && setError(false)
         setItemTitle(e.currentTarget.value)
-        setError(null)
     }
     const createTaskOnEnterHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -32,17 +34,17 @@ export const CreateItemForm = ({createItemTitle,maxTitleLength}: Props) => {
     const isAddBtnDisabled = itemTitle === "" || itemTitle.length > maxTitleLength
     return (
         <div>
-            <input
-                className={error ? 'error' : ''}
-                value={itemTitle}
-                placeholder={`max ${maxTitleLength} charters`}
-                onChange={changeTaskTitleHandler}
-                onKeyDown={createTaskOnEnterHandler}
+            <Box sx={boxSx}><TextField variant={"outlined"} size={"small"}
+                          error={error}
+                          label={"Enter a title"}
+                          helperText={error && "Title must be valid"}
+                          value={itemTitle}
+                          onChange={changeTaskTitleHandler}
+                          onKeyDown={createTaskOnEnterHandler}
             />
-            <Button title="+" onClickHandler={createItemHandler}
-                    disabled={isAddBtnDisabled}/>
-            {error && <div className={"error-message"}>{error}</div>}
-
+                <IconButton onClick={createItemHandler} disabled={isAddBtnDisabled}>
+                    <AddCircleOutlineIcon/>
+                </IconButton></Box>
             {itemTitle && itemTitle.length <= maxTitleLength && <div>max {maxTitleLength} charters</div>}
             {itemTitle.length > maxTitleLength && <div style={{color: "red"}}>over charters</div>}
         </div>
